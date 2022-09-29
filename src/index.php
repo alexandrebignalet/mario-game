@@ -86,31 +86,28 @@ foreach ($scores as $score) {
     
     
     <canvas id="canvas"></canvas>
-    
-    
+
+
+
+    <form name="score-form" method="post" action="add_score.php" >
+        <input type="number" name="score" id="score" hidden />
+        <button id="push-score" type="submit" hidden></button>
+    </form>
+
+    <script type="text/javascript">
+
+        function pushscore(score) {
+            const button = document.querySelector('#push-score');
+            const scoreInput = document.querySelector('#score');
+
+            scoreInput.value = score;
+            button.click();
+        }
+
+    </script>
     <script src="./js/canvas.js"></script>
-  
   </body>
+
 </html>
 
 
-<form name="score-form" id="pluiscore" method="post" action="add_score.php" >
-    <input type="text" name="username" id="username" hidden />
-    <input type="number" name="score" id="score" hidden />
-    <button id="push-score" type="submit" hidden>TTOTOT </button>
-</form>
-
-<script type="text/javascript">
-
-    function pushscore(userName, score) {
-    
-        const button = document.querySelector('#push-score');
-        const nameInput = document.querySelector('#username');
-        const scoreInput = document.querySelector('#score');
-
-        nameInput.value = userName;
-        scoreInput.value = score;
-        button.click();
-    }
-
-</script>

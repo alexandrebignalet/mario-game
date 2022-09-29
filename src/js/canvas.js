@@ -21,7 +21,7 @@ function start() {
   console.log('start');
   this.toggleScreen('menu', false)
   this.toggleScreen('canvas', true)
-  
+    init();
 }
 
 function toggleScreen(id, toggle) {
@@ -32,6 +32,10 @@ function toggleScreen(id, toggle) {
 
 function gameOver() {
 
+    pushscore(100);
+
+    stop();
+
   canvas.style.display = 'none';
   endScreen.innerHTML = `<div id="gameOver">Game over noob <br/>score :  </div>`;
   endScreen.style.visibility = 'visible';
@@ -41,21 +45,8 @@ function gameOver() {
 }
 
 function restart() {
-  let body = document.querySelector('body')
-
-  // TODO gérer le problème d'affichage du game over
-  if(gameOver() == true) {
-    body.addEventListener('click', function (e) {
-      console.log('tu cliques mais ca marche pas')
-      e.stopPropagation()
-      endScreen.style.visibility = 'hidden';
-      
-      
-      menu.style.display = 'block';
-    })
-  }
- 
- 
+    endScreen.style.visibility = 'hidden';
+    start();
 }
 
 function win() {
@@ -166,11 +157,11 @@ function createImage(imageSrc) {
   return image;
 }
 
-let platformImage = createImage(platform);
-let platformSmallTallImage = createImage(platformSmallTall);
-let player = new Player();
+let animationFrame;
+let player;
 let platforms = []
 let genericObjects = []
+let scrollOffset = 0;
 
 const keys = {
   right: {
@@ -184,15 +175,81 @@ const keys = {
   }
 }
 
-let scrollOffset = 0;
+function stop() {
+    window.removeEventListener('keydown', onKeyDown);
+    window.removeEventListener('keyup', onKeyUp);
 
-init()
+    cancelAnimationFrame(animationFrame);
+
+    player = undefined;
+    platforms = []
+    genericObjects = []
+    scrollOffset = 0;
+
+    keys.right.pressed = false;
+    keys.left.pressed = false;
+    keys.up.pressed = false;
+}
+
+function onKeyDown() {
+    return ({keyCode}) => {
+
+        switch (keyCode) {
+            case 81:
+                console.log('left')
+                keys.left.pressed = true
+                break
+
+            case 68:
+                console.log('right')
+                keys.right.pressed = true
+                break
+
+            case 90:
+                console.log('up')
+                player.velocity.y -= 20
+                keys.up.pressed = true
+                break
+
+            case 83:
+                console.log('down')
+                break
+
+        }
+    };
+}
+
+function onKeyUp() {
+    return ({keyCode}) => {
+
+        switch (keyCode) {
+            case 81:
+                console.log('left')
+                keys.left.pressed = false
+                break
+
+            case 68:
+                console.log('right')
+                keys.right.pressed = false
+                break
+
+            case 90:
+                console.log('up')
+                keys.up.pressed = false
+                break
+
+            case 83:
+                console.log('down')
+                break
+
+        }
+    };
+}
 
 function init() {
 
-  
-  platformImage = createImage(platform);
-
+    let platformImage = createImage(platform);
+    let platformSmallTallImage = createImage(platformSmallTall);
   player = new Player();
 
   platforms = [
@@ -262,12 +319,18 @@ function init() {
 
  scrollOffset = 0;
 
+
+
+    animate ();
+
+    window.addEventListener('keydown', onKeyDown())
+    window.addEventListener('keyup', onKeyUp())
 }
 
 
 function animate () {
 
-    requestAnimationFrame(animate);
+    animationFrame = requestAnimationFrame(animate);
     c.fillStyle = 'white';
     c.fillRect(0, 0, canvas.width, canvas.height)
     
@@ -351,57 +414,3 @@ function animate () {
 
 }
 
-
-
-animate ();
-
-window.addEventListener('keydown', ({ keyCode }) => {
-
-    switch (keyCode) {
-        case 81: 
-        console.log('left')
-        keys.left.pressed = true
-        break
-
-        case 68: 
-        console.log('right')
-        keys.right.pressed = true
-        break
-        
-        case 90: 
-        console.log('up')
-        player.velocity.y -= 20
-        keys.up.pressed = true
-        break
-
-        case 83: 
-        console.log('down')
-        break
-
-    }
-})
-
-window.addEventListener('keyup', ({ keyCode }) => {
-
-    switch (keyCode) {
-        case 81: 
-        console.log('left')
-        keys.left.pressed = false
-        break
-
-        case 68: 
-        console.log('right')
-        keys.right.pressed = false
-        break
-        
-        case 90: 
-        console.log('up')
-        keys.up.pressed = false
-        break
-
-        case 83: 
-        console.log('down')
-        break
-
-    }
-})

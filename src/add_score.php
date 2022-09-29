@@ -1,10 +1,10 @@
 <?php
-
+session_start();
 $mysqli = new mysqli("db", "sauron", "example", "gandalf");
 
 
 if (count($_POST) > 0) {
-    $username = $_POST["username"];
+    $username = $_SESSION["mage-name"];
     $score = $_POST["score"];
 
     $sql = "INSERT INTO scores (score, username) VALUES(" . $score . ", '" . $username . "');";
