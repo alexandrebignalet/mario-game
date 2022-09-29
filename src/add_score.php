@@ -12,6 +12,7 @@ if (count($_POST) > 0) {
         echo "Error creating table: " . $mysqli->error;
     }
     $_POST = array();
+    $_SESSION["is-game-over"] = true;
 }
 ?>
 <script type="text/javascript">

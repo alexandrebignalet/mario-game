@@ -6,7 +6,6 @@
       <change beforePath="$PROJECT_DIR$/src/add_score.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/add_score.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/js/canvas.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/canvas.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/script.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +50,7 @@
       <option name="presentableId" value="Default" />
       <updated>1664471349840</updated>
       <workItem from="1664471353958" duration="44000" />
-      <workItem from="1664471412476" duration="6085000" />
+      <workItem from="1664471412476" duration="6495000" />
     </task>
     <servers />
   </component>

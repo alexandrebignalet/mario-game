@@ -35,15 +35,6 @@ function fetchScores($mysqli, $username) {
     return $scores;
 }
 
-foreach ($scores as $score) {
-    echo "<br>";
-    echo $score->score . " " . $score->username;
-    echo "<br>";
-}
-
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,12 +56,20 @@ foreach ($scores as $score) {
         </div>
     </div>
     <?php endif; ?>
-    
 
 
-    <div id="endScreen" onclick="restart()">
-    </div>
-    <?php if(isset($currentUser)): ?>
+    <?php if(isset($isGameOver)): ?>
+
+        <div id="endScreen" onclick="restart()">
+            <div id="gameOver">Game over noob <br/>score :  </div>
+
+            <form name="restart-form" action="restart.php" method="post" class="form-example">
+                <input id="start" type="submit" value="Continuer"/>
+            </form>
+        </div>
+    <?php endif; ?>
+
+    <?php if(isset($currentUser) && !$isGameOver): ?>
     <div id="menu">
       <div id="start-screen" onclick="start()">
       <button id="start"  >Lancer une partie</button>  
@@ -87,6 +86,15 @@ foreach ($scores as $score) {
     
     <canvas id="canvas"></canvas>
 
+    <div id="historic">
+        <ul>
+            <?php
+                foreach ($scores as $score) {
+                    echo "<li>".$score->score . " " . $score->username."</li>";
+                }
+            ?>
+        </ul>
+    </div>
 
 
     <form name="score-form" method="post" action="add_score.php" >

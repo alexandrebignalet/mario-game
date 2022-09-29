@@ -31,17 +31,7 @@ function toggleScreen(id, toggle) {
 }
 
 function gameOver() {
-
     pushscore(100);
-
-    stop();
-
-  canvas.style.display = 'none';
-  endScreen.innerHTML = `<div id="gameOver">Game over noob <br/>score :  </div>`;
-  endScreen.style.visibility = 'visible';
-  
-  return true
-        
 }
 
 function restart() {
