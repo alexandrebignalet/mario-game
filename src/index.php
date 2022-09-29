@@ -2,14 +2,15 @@
 
 session_start();
 $currentUser = $_SESSION["mage-name"];
-
+$isGameOver = isset($_SESSION["is-game-over"]);
+var_dump($isGameOver);
 $mysqli = new mysqli("db", "sauron", "example", "gandalf");
 
 // WARNING REMOVE THIS IF IT BUGS
 //truncate($mysqli);
 
 initDatabase($mysqli);
-$scores = fetchScores($mysqli, "miguel");
+$scores = fetchScores($mysqli, $currentUser);
 
 function initDatabase($mysqli) {
     $sql = "CREATE TABLE IF NOT EXISTS scores (game_id MEDIUMINT NOT NULL AUTO_INCREMENT, score MEDIUMINT NOT NULL, username CHAR(100) NOT NULL, PRIMARY KEY (game_id));";
@@ -58,10 +59,10 @@ function fetchScores($mysqli, $username) {
     <?php endif; ?>
 
 
-    <?php if(isset($isGameOver)): ?>
+    <?php if($isGameOver): ?>
 
         <div id="endScreen" onclick="restart()">
-            <div id="gameOver">Game over noob <br/>score :  </div>
+            <div id="gameOver">Game over noob <br/>score : <?php echo $scores[count($scores) -1]->score; ?> </div>
 
             <form name="restart-form" action="restart.php" method="post" class="form-example">
                 <input id="start" type="submit" value="Continuer"/>
@@ -75,7 +76,7 @@ function fetchScores($mysqli, $username) {
       <button id="start"  >Lancer une partie</button>  
       </div> 
       <div id="historic">
-      <button id="start" >Historiques des scores</button>
+      <button id="start" onclick="showScores()">Historiques des scores</button>
       </div>
       <div id="tutoriel" onclick="historyGame()">
       <button id="start" >Histoire du jeu</button>
@@ -86,20 +87,20 @@ function fetchScores($mysqli, $username) {
     
     <canvas id="canvas"></canvas>
 
-    <div id="historic">
+    <div id="history">
         <ul>
             <?php
                 foreach ($scores as $score) {
-                    echo "<li>".$score->score . " " . $score->username."</li>";
+                    echo "<li>$score->score $score->username</li>";
                 }
             ?>
         </ul>
     </div>
 
 
-    <form name="score-form" method="post" action="add_score.php" >
+    <form name="score-form" method="post" action="add_score.php">
         <input type="number" name="score" id="score" hidden />
-        <button id="push-score" type="submit" hidden></button>
+        <input id="push-score" type="submit" hidden />
     </form>
 
     <script type="text/javascript">
@@ -111,6 +112,7 @@ function fetchScores($mysqli, $username) {
             scoreInput.value = score;
             button.click();
         }
+
 
     </script>
     <script src="./js/canvas.js"></script>

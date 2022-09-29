@@ -99,10 +99,16 @@ p {
   text-transform: uppercase;
   cursor: pointer;
   z-index: 3;
-  visibility: hidden;
-  
+
   transition: 0.1s;
 }
+
+#history {
+  visibility: hidden;
+  background: #fff;
+z-index: 1000;
+}
+
 #gameOver {
     margin: 10rem auto 0;
     width: 70%;

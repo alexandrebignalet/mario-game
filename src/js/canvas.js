@@ -6,6 +6,7 @@ const run = '../medias/run.png'
 const zombie = '../medias/zombie_stand.png'
 const endScreen = document.getElementById('endScreen')
 const menu = document.getElementById('menu');
+const history = document.getElementById('history');
 const canvas = document.getElementById('canvas');
 const c = canvas.getContext('2d');
 
@@ -15,6 +16,10 @@ canvas.style.display = 'none'
 
 const gravity = 1.5
 let loopPlay = false;
+
+function showScores() {
+    history.style.visibility = 'visible';
+}
 
 function start() { 
 
@@ -31,7 +36,13 @@ function toggleScreen(id, toggle) {
 }
 
 function gameOver() {
-    pushscore(100);
+
+    stop();
+
+  canvas.style.display = 'none';
+
+  return true
+
 }
 
 function restart() {
@@ -166,6 +177,9 @@ const keys = {
 }
 
 function stop() {
+    const score = Math.trunc(scrollOffset / 100);
+    pushscore(score);
+
     window.removeEventListener('keydown', onKeyDown);
     window.removeEventListener('keyup', onKeyUp);
 
