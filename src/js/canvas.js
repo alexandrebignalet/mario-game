@@ -3,7 +3,8 @@ const hills = '../medias/hills.png'
 const background = '../medias/background.png'
 const platformSmallTall = '../medias/platformSmallTall.png'
 const run = '../medias/run.png'
-const zombie = '../medias/zombie_stand.png'
+const rodeur = '../medias/rodeur.png'
+const ring = '../medias/ring.png'
 const endScreen = document.getElementById('endScreen')
 const menu = document.getElementById('menu');
 const history = document.getElementById('history');
@@ -26,7 +27,27 @@ function start() {
   console.log('start');
   this.toggleScreen('menu', false)
   this.toggleScreen('canvas', true)
-    init();
+  init();
+}
+
+function stop() {
+  const score = Math.trunc(scrollOffset / 100);
+  pushscore(score);
+
+  window.removeEventListener('keydown', onKeyDown);
+  window.removeEventListener('keyup', onKeyUp);
+
+  cancelAnimationFrame(animationFrame);
+
+  player = undefined;
+  rodeur = undefined;
+  platforms = []
+  genericObjects = []
+  scrollOffset = 0;
+
+  keys.right.pressed = false;
+  keys.left.pressed = false;
+  keys.up.pressed = false;
 }
 
 function toggleScreen(id, toggle) {
@@ -37,7 +58,7 @@ function toggleScreen(id, toggle) {
 
 function gameOver() {
 
-    stop();
+  stop();
 
   canvas.style.display = 'none';
 
@@ -51,14 +72,15 @@ function restart() {
 }
 
 function win() {
-  endScreen.innerHTML = `<div class="youWin">Well done ! You overcome this motherfucker</div>`;
+  stop()
+
 }
 
 function historyGame() {
 
   const menu = document.getElementById('menu')
    
-    menu.innerHTML = "<p> Gandalf a de grands ennuis, un vilain gobelin ou peut-être un orc lui a volé son herbe à pipe, il se hâte dans les montagnes de la Moria récupérer sa marchandise que seul un magicien aguerri peut inhaler. Va t'il y arriver? Cliques sur l'écran pour commencer l'aventure</p>"
+    menu.innerHTML = "<p> Gandalf le gris cours comme le vent, il doit se hâter à retrouver l'Anneau Unique dans les mines de la Moria. Le vilain et ignoble Gollum l'aurait perdu, l'avenir de la terre du Milieu en dépend...</p>"
     const message = document.querySelector('p')
     message.addEventListener('click', function ()  {
       console.log('tu click')
@@ -113,6 +135,70 @@ class Player {
     }
 }
 
+class Rodeur {
+  constructor (x,y){
+      
+      this.position = {
+          x: 1000,
+          y: 100
+      }
+      this.velocity = {
+          x: 0,
+          y: 0,
+      }
+      this.width = 130
+      this.height = 200
+      this.image = createImage(rodeur)
+      this.frames = 0
+      
+  }
+
+  draw() {
+    c.drawImage(
+      this.image,
+      140* this.frames,
+      0,
+      100,
+      83,
+      this.position.x, this.position.y,
+      this.width, this.height)
+  }
+
+  update() {
+      this.frames ++
+      if(this.frames > 11) {
+        this.frames = 0
+      }
+      this.draw()
+      this.position.y += this.velocity.y
+      this.position.x += this.velocity.x
+      
+      if(this.position.y +this.height +this.velocity.y <= canvas.height) {
+  
+      this.velocity.y += gravity   
+    }
+     
+  }
+}
+
+class Ring {
+  constructor({ x, y, image }) {
+      this.position = {
+          x,
+          y,
+          image: image
+      }
+
+      this.image = image
+      this.width = 500
+      this.height = 500
+    
+  }
+
+  draw() {
+     c.drawImage(this.image, this.position.x, this.position.y)
+  }
+}
 
 class Platform {
     constructor({ x, y, image }) {
@@ -160,9 +246,14 @@ function createImage(imageSrc) {
 
 let animationFrame;
 let player;
+let aragorn;
 let platforms = []
 let genericObjects = []
+let anneau;
 let scrollOffset = 0;
+let platformImage = createImage(platform);
+let platformSmallTallImage = createImage(platformSmallTall);
+let ringImage = createImage(ring);
 
 const keys = {
   right: {
@@ -176,24 +267,7 @@ const keys = {
   }
 }
 
-function stop() {
-    const score = Math.trunc(scrollOffset / 100);
-    pushscore(score);
 
-    window.removeEventListener('keydown', onKeyDown);
-    window.removeEventListener('keyup', onKeyUp);
-
-    cancelAnimationFrame(animationFrame);
-
-    player = undefined;
-    platforms = []
-    genericObjects = []
-    scrollOffset = 0;
-
-    keys.right.pressed = false;
-    keys.left.pressed = false;
-    keys.up.pressed = false;
-}
 
 function onKeyDown() {
     return ({keyCode}) => {
@@ -252,9 +326,15 @@ function onKeyUp() {
 
 function init() {
 
-    let platformImage = createImage(platform);
-    let platformSmallTallImage = createImage(platformSmallTall);
+    
   player = new Player();
+ // aragorn = new Rodeur();
+  
+  anneau = new Ring(
+    { x:platformImage.width * 2 + 500 + platformImage.width - platformSmallTallImage.width - 2, y:270, ringImage },
+  )
+    console.log(anneau.width)
+    console.log(ring)
 
   platforms = [
     new Platform({ 
@@ -281,6 +361,7 @@ function init() {
       x: platformImage.width * 11 + 350- 2 + platformImage.width - platformSmallTallImage.width,
       y:270, 
       image: createImage(platformSmallTall)}),
+   
     new Platform({
       x: -1, y:470, image: platformImage}), 
     new Platform({ 
@@ -323,12 +404,10 @@ function init() {
 
  scrollOffset = 0;
 
+  animate ();
 
-
-    animate ();
-
-    window.addEventListener('keydown', onKeyDown())
-    window.addEventListener('keyup', onKeyUp())
+  window.addEventListener('keydown', onKeyDown())
+      window.addEventListener('keyup', onKeyUp())
 }
 
 
@@ -346,7 +425,9 @@ function animate () {
     })
 
     player.update();
-   
+    //aragorn.update();
+    
+    
 
     if(keys.right.pressed && player.position.x < 400) {
         player.velocity.x = player.speed
@@ -378,7 +459,7 @@ function animate () {
             })
         }
     }
-// platform colision detection
+// platform colision detection for player
     platforms.forEach(platform => { 
         if(player.position.y + player.height <= platform.position.y && 
             player.position.y + player.height + player.velocity.y >= platform.position.y &&
@@ -386,11 +467,20 @@ function animate () {
             player.position.x <= platform.width + platform.position.x) {
 
             player.velocity.y = 0
-
-            
         }
      
     })
+// platform colision detection for rodeur
+//   platforms.forEach(platform => { 
+//        if(aragorn.position.y + aragorn.height <= platform.position.y && 
+//            aragorn.position.y + aragorn.height + aragorn.velocity.y >= platform.position.y &&
+//            aragorn.position.x + aragorn.width >= platform.position.x &&
+ //           aragorn.position.x <= platform.width + platform.position.x) {
+//  
+//            aragorn.velocity.y = 0
+ //     }
+   
+//    })
 // canvas colision detection
     if(player.position.x <= 10) {
       player.velocity.x = 0
@@ -405,8 +495,9 @@ function animate () {
     }
 
 // win conditions
-    if(scrollOffset > 6000) {
+    if(scrollOffset > 2000) {
         console.log('You win little bastard')
+        
         win()
     }
 
@@ -417,4 +508,3 @@ function animate () {
     }
 
 }
-

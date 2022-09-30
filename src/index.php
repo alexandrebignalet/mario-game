@@ -3,7 +3,8 @@
 session_start();
 $currentUser = $_SESSION["mage-name"];
 $isGameOver = isset($_SESSION["is-game-over"]);
-var_dump($isGameOver);
+$isWin = isset($_SESSION["is-win"]);
+
 $mysqli = new mysqli("db", "sauron", "example", "gandalf");
 
 // WARNING REMOVE THIS IF IT BUGS
@@ -64,6 +65,14 @@ function fetchScores($mysqli, $username) {
         <div id="endScreen" onclick="restart()">
             <div id="gameOver">Game over noob <br/>score : <?php echo $scores[count($scores) -1]->score; ?> </div>
 
+            <form name="restart-form" action="restart.php" method="post" class="form-example">
+                <input id="start" type="submit" value="Continuer"/>
+            </form>
+        </div>
+
+    <?php elseif($isWin): ?>
+        <div id="endScreen" onclick="restart()">
+            <div id="isWin">Well done ! You save the middle earth<br/>score : <?php echo $scores[count($scores) -1]->score; ?> </div>
             <form name="restart-form" action="restart.php" method="post" class="form-example">
                 <input id="start" type="submit" value="Continuer"/>
             </form>

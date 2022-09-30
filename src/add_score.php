@@ -13,6 +13,7 @@ if (count($_POST) > 0) {
     }
     $_POST = array();
     $_SESSION["is-game-over"] = 'game-over';
+    $_SESSION["is-win"] = 'is-win';
 }
 ?>
 <script type="text/javascript">
